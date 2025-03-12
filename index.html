@@ -1,0 +1,736 @@
+import React, { useState } from 'react';
+
+const BusinessPurposeApplication = () => {
+  const [formData, setFormData] = useState({
+    // Borrower Information
+    individualName: '',
+    closingAs: 'individual', // individual or entity
+    entityName: '',
+    entityState: '',
+    entityType: '',
+    goodStanding: '',
+    mailingAddress: '',
+    mailingCity: '',
+    mailingState: '',
+    mailingZip: '',
+    propertyHeldInNameOf: '',
+    
+    // Guarantors
+    guarantors: [
+      { name: '', ownership: '', title: '' },
+      { name: '', ownership: '', title: '' },
+      { name: '', ownership: '', title: '' },
+      { name: '', ownership: '', title: '' }
+    ],
+    
+    // Guarantor Details (for up to 4 guarantors)
+    guarantorDetails: [
+      {
+        name: '', title: '', address: '', residenceType: '', 
+        residenceLength: '', purchasePrice: '', 
+        lienholder: '', mortgageBalance: '',
+        monthlyPayment: '', insurancePayment: '',
+        liquidity: '', netWorth: '', creditScore: '',
+        dob: '', ssn: '', mobile: '', email: '', 
+        employer: '', position: '', monthlyIncome: '',
+        investmentExperience: '', married: '', spouseName: ''
+      },
+      {
+        name: '', title: '', address: '', residenceType: '', 
+        residenceLength: '', purchasePrice: '', 
+        lienholder: '', mortgageBalance: '',
+        monthlyPayment: '', insurancePayment: '',
+        liquidity: '', netWorth: '', creditScore: '',
+        dob: '', ssn: '', mobile: '', email: '', 
+        employer: '', position: '', monthlyIncome: '',
+        investmentExperience: '', married: '', spouseName: ''
+      },
+      {
+        name: '', title: '', address: '', residenceType: '', 
+        residenceLength: '', purchasePrice: '', 
+        lienholder: '', mortgageBalance: '',
+        monthlyPayment: '', insurancePayment: '',
+        liquidity: '', netWorth: '', creditScore: '',
+        dob: '', ssn: '', mobile: '', email: '', 
+        employer: '', position: '', monthlyIncome: '',
+        investmentExperience: '', married: '', spouseName: ''
+      },
+      {
+        name: '', title: '', address: '', residenceType: '', 
+        residenceLength: '', purchasePrice: '', 
+        lienholder: '', mortgageBalance: '',
+        monthlyPayment: '', insurancePayment: '',
+        liquidity: '', netWorth: '', creditScore: '',
+        dob: '', ssn: '', mobile: '', email: '', 
+        employer: '', position: '', monthlyIncome: '',
+        investmentExperience: '', married: '', spouseName: ''
+      }
+    ],
+    
+    // Broker Information
+    brokerName: '',
+    brokerPhone: '',
+    brokerEmail: '',
+    brokerCompany: '',
+    
+    // Transaction Information
+    loanAmount: '',
+    loanPurpose: '',
+    cashOutAmount: '',
+    occupancyType: 'investment',
+    incomeType: 'dscr',
+    
+    // Subject Property Information
+    propertyAddress: '',
+    propertyCity: '',
+    propertyState: '',
+    propertyZip: '',
+    propertyCounty: '',
+    dateAcquired: '',
+    purchasePrice: '',
+    yearBuilt: '',
+    yearRenovated: '',
+    renovationCost: '',
+    collateralType: '',
+    numberOfUnits: '',
+    occupiedUnits: '',
+    monthlyRent: '',
+    estimatedValue: '',
+    investorExperience: '',
+    buildingSqFt: '',
+    landSqFt: '',
+    currentLender: '',
+    amountOwed: '',
+    currentRate: '',
+    propertyTaxAmount: '',
+    hazardInsurance: '',
+    liabilityInsurance: '',
+    hoaDues: '',
+    windInsurance: '',
+    floodZone: '',
+    insuranceCompany: '',
+    insuranceAgent: '',
+    insuranceEmail: '',
+    insurancePhone: '',
+    
+    // Real Estate Owned (8 properties)
+    ownedProperties: Array(8).fill({
+      propertyType: '',
+      address: '',
+      purchasePrice: '',
+      marketValue: '',
+      lienholder: '',
+      loanBalance: '',
+      ownershipPercentage: '',
+      annualRent: '',
+      managementFees: '',
+      annualTaxes: '',
+      annualInsurance: ''
+    }),
+    
+    // Government Monitoring
+    monitoringConsent: false,
+    borrowerGender: Array(4).fill(''),
+    borrowerRace: Array(4).fill([]),
+    borrowerEthnicity: Array(4).fill(''),
+    
+    // Declarations
+    declarations: {
+      usCitizen: Array(4).fill(''),
+      residentAlien: Array(4).fill(''),
+      nonResidentAlien: Array(4).fill(''),
+      sellerRelationship: Array(4).fill(''),
+      bankruptcy: Array(4).fill(''),
+      foreclosure: Array(4).fill(''),
+      lawsuit: Array(4).fill(''),
+      delinquent: Array(4).fill(''),
+      latePayments: Array(4).fill(''),
+      coMaker: Array(4).fill(''),
+      judgments: Array(4).fill(''),
+      borrowingMoney: Array(4).fill(''),
+      occupyProperty: Array(4).fill(''),
+      cleanEnergyLien: Array(4).fill('')
+    },
+    
+    // Certification
+    agreeToCertification: false,
+    signatureDate: Array(2).fill('')
+  });
+  
+  const handleChange = (section, field, value, index = null) => {
+    if (index !== null) {
+      setFormData(prev => {
+        const newData = {...prev};
+        newData[section][index][field] = value;
+        return newData;
+      });
+    } else if (section === 'declarations') {
+      setFormData(prev => ({
+        ...prev,
+        declarations: {
+          ...prev.declarations,
+          [field]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
+  };
+  
+  const handleCheckboxChange = (section, field, index) => {
+    if (section === 'borrowerRace') {
+      setFormData(prev => {
+        const newRaces = [...prev.borrowerRace];
+        const currentRaces = [...newRaces[index]];
+        
+        if (currentRaces.includes(field)) {
+          newRaces[index] = currentRaces.filter(race => race !== field);
+        } else {
+          newRaces[index] = [...currentRaces, field];
+        }
+        
+        return {
+          ...prev,
+          borrowerRace: newRaces
+        };
+      });
+    } else if (section === 'declarations') {
+      setFormData(prev => {
+        const newDeclarations = {...prev.declarations};
+        newDeclarations[field][index] = newDeclarations[field][index] === 'Yes' ? 'No' : 'Yes';
+        return {
+          ...prev,
+          declarations: newDeclarations
+        };
+      });
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: !prev[field]
+      }));
+    }
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form data submitted:', formData);
+    // Here you would normally send this data to your server
+    alert('Application submitted successfully!');
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-4 bg-white">
+      <h1 className="text-2xl font-bold text-center mb-6">Business Purpose Only Application</h1>
+      
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* BORROWER INFORMATION */}
+        <section className="border border-gray-300 p-4 rounded">
+          <h2 className="text-xl font-semibold mb-4 bg-gray-100 p-2">BORROWER INFORMATION</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block mb-1">Individual Name:</label>
+              <input 
+                type="text" 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={formData.individualName}
+                onChange={(e) => setFormData({...formData, individualName: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block mb-1">Closing As:</label>
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="closingAs"
+                    value="individual"
+                    checked={formData.closingAs === 'individual'}
+                    onChange={() => setFormData({...formData, closingAs: 'individual'})}
+                  />
+                  <span className="ml-2">Individual</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="closingAs"
+                    value="entity"
+                    checked={formData.closingAs === 'entity'}
+                    onChange={() => setFormData({...formData, closingAs: 'entity'})}
+                  />
+                  <span className="ml-2">Entity</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <div className="md:col-span-3">
+              <label className="block mb-1">Entity Name:</label>
+              <input 
+                type="text" 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={formData.entityName}
+                onChange={(e) => setFormData({...formData, entityName: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block mb-1">State:</label>
+              <input 
+                type="text" 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={formData.entityState}
+                onChange={(e) => setFormData({...formData, entityState: e.target.value})}
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
+            <div className="md:col-span-4">
+              <label className="block mb-1">Entity Type:</label>
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="entityType"
+                    value="LLC"
+                    checked={formData.entityType === 'LLC'}
+                    onChange={() => setFormData({...formData, entityType: 'LLC'})}
+                  />
+                  <span className="ml-2">LLC</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="entityType"
+                    value="Corporation"
+                    checked={formData.entityType === 'Corporation'}
+                    onChange={() => setFormData({...formData, entityType: 'Corporation'})}
+                  />
+                  <span className="ml-2">Corporation</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="entityType"
+                    value="Partnership"
+                    checked={formData.entityType === 'Partnership'}
+                    onChange={() => setFormData({...formData, entityType: 'Partnership'})}
+                  />
+                  <span className="ml-2">Partnership</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="entityType"
+                    value="Trust"
+                    checked={formData.entityType === 'Trust'}
+                    onChange={() => setFormData({...formData, entityType: 'Trust'})}
+                  />
+                  <span className="ml-2">Trust</span>
+                </label>
+              </div>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block mb-1">Good Standing?</label>
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="goodStanding"
+                    value="Yes"
+                    checked={formData.goodStanding === 'Yes'}
+                    onChange={() => setFormData({...formData, goodStanding: 'Yes'})}
+                  />
+                  <span className="ml-2">Yes</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input 
+                    type="radio" 
+                    className="form-radio"
+                    name="goodStanding"
+                    value="No"
+                    checked={formData.goodStanding === 'No'}
+                    onChange={() => setFormData({...formData, goodStanding: 'No'})}
+                  />
+                  <span className="ml-2">No</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">Individual/Entity Mailing Address:</label>
+            <input 
+              type="text" 
+              className="w-full p-2 border border-gray-300 rounded"
+              value={formData.mailingAddress}
+              onChange={(e) => setFormData({...formData, mailingAddress: e.target.value})}
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block mb-1">City:</label>
+              <input 
+                type="text" 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={formData.mailingCity}
+                onChange={(e) => setFormData({...formData, mailingCity: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block mb-1">State:</label>
+              <input 
+                type="text" 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={formData.mailingState}
+                onChange={(e) => setFormData({...formData, mailingState: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block mb-1">ZIP:</label>
+              <input 
+                type="text" 
+                className="w-full p-2 border border-gray-300 rounded"
+                value={formData.mailingZip}
+                onChange={(e) => setFormData({...formData, mailingZip: e.target.value})}
+              />
+            </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">Property will be held in the name of:</label>
+            <input 
+              type="text" 
+              className="w-full p-2 border border-gray-300 rounded"
+              value={formData.propertyHeldInNameOf}
+              onChange={(e) => setFormData({...formData, propertyHeldInNameOf: e.target.value})}
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-2">Please list ALL owners applying to be a guarantor on this loan below or attach an organization chart.</label>
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 p-2 text-left">Name</th>
+                  <th className="border border-gray-300 p-2 text-left">Ownership %</th>
+                  <th className="border border-gray-300 p-2 text-left">Org Title</th>
+                </tr>
+              </thead>
+              <tbody>
+                {formData.guarantors.map((guarantor, index) => (
+                  <tr key={index}>
+                    <td className="border border-gray-300 p-2">
+                      <input 
+                        type="text" 
+                        className="w-full p-1"
+                        value={guarantor.name}
+                        onChange={(e) => {
+                          const updatedGuarantors = [...formData.guarantors];
+                          updatedGuarantors[index].name = e.target.value;
+                          setFormData({...formData, guarantors: updatedGuarantors});
+                        }}
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      <input 
+                        type="text" 
+                        className="w-full p-1"
+                        value={guarantor.ownership}
+                        onChange={(e) => {
+                          const updatedGuarantors = [...formData.guarantors];
+                          updatedGuarantors[index].ownership = e.target.value;
+                          setFormData({...formData, guarantors: updatedGuarantors});
+                        }}
+                      />
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      <input 
+                        type="text" 
+                        className="w-full p-1"
+                        value={guarantor.title}
+                        onChange={(e) => {
+                          const updatedGuarantors = [...formData.guarantors];
+                          updatedGuarantors[index].title = e.target.value;
+                          setFormData({...formData, guarantors: updatedGuarantors});
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        
+        {/* GUARANTOR INFORMATION - For each guarantor */}
+        {[0, 1, 2, 3].map((guarantorIndex) => (
+          <section key={guarantorIndex} className="border border-gray-300 p-4 rounded">
+            <h2 className="text-xl font-semibold mb-4 bg-gray-100 p-2">
+              Guarantor #{guarantorIndex + 1} Information
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block mb-1">Name:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].name}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].name = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Title:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].title}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].title = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
+              <div className="md:col-span-5">
+                <label className="block mb-1">Primary Residence Address:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].address}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].address = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div className="md:col-span-1">
+                <label className="block mb-1">Residence:</label>
+                <div className="flex space-x-2">
+                  <label className="inline-flex items-center">
+                    <input 
+                      type="radio" 
+                      className="form-radio"
+                      name={`residenceType${guarantorIndex}`}
+                      value="Own"
+                      checked={formData.guarantorDetails[guarantorIndex].residenceType === 'Own'}
+                      onChange={() => {
+                        const newGuarantorDetails = [...formData.guarantorDetails];
+                        newGuarantorDetails[guarantorIndex].residenceType = 'Own';
+                        setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                      }}
+                    />
+                    <span className="ml-1">Own</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input 
+                      type="radio" 
+                      className="form-radio"
+                      name={`residenceType${guarantorIndex}`}
+                      value="Rent"
+                      checked={formData.guarantorDetails[guarantorIndex].residenceType === 'Rent'}
+                      onChange={() => {
+                        const newGuarantorDetails = [...formData.guarantorDetails];
+                        newGuarantorDetails[guarantorIndex].residenceType = 'Rent';
+                        setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                      }}
+                    />
+                    <span className="ml-1">Rent</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block mb-1">How long at primary residence?</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].residenceLength}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].residenceLength = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Purchase price of primary residence: $</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].purchasePrice}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].purchasePrice = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block mb-1">Primary residence lienholder name, address, phone number, and loan #:</label>
+                <textarea 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  rows="2"
+                  value={formData.guarantorDetails[guarantorIndex].lienholder}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].lienholder = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                ></textarea>
+              </div>
+              <div>
+                <label className="block mb-1">Purchase residence mortgage balance: $</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].mortgageBalance}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].mortgageBalance = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block mb-1">Primary residence monthly mortgage/rental payment: $</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].monthlyPayment}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].monthlyPayment = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Primary residence monthly hazard and flood insurance payment: $</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].insurancePayment}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].insurancePayment = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label className="block mb-1">Liquidity:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].liquidity}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].liquidity = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Net Worth:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].netWorth}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].netWorth = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Expected Credit Score:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].creditScore}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].creditScore = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label className="block mb-1">DOB:</label>
+                <input 
+                  type="date" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].dob}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].dob = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">SSN:</label>
+                <input 
+                  type="text" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].ssn}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].ssn = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block mb-1">Mobile #:</label>
+                <input 
+                  type="tel" 
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={formData.guarantorDetails[guarantorIndex].mobile}
+                  onChange={(e) => {
+                    const newGuarantorDetails = [...formData.guarantorDetails];
+                    newGuarantorDetails[guarantorIndex].mobile = e.target.value;
+                    setFormData({...formData, guarantorDetails: newGuarantorDetails});
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-
